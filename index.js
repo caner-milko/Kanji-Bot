@@ -349,7 +349,6 @@ async function tryAddKanjiToUser(kanji, channel, userID) {
     channel.send("Found kanji:");
     channel.send(foundEmbed);
     channel.send("Added kanji ``" + kanji + "`` to kanji list of <@" + userID + ">, which contains ``" + user['kanjis'].length + "`` kanji.");
-    DisplayList(user, channel);
     UpdateMemberDBJson();
 }
 
