@@ -5,7 +5,7 @@ setInterval(() => {
 
 const Discord = require('discord.js');
 const fetch = require('node-fetch');
-const { prefix, token } = require('./config.json');
+const { prefix, token, rapidkey } = require('./config.json');
 const client = new Discord.Client();
 
 const fs = require("fs");
@@ -325,7 +325,7 @@ function jsonFromJisho(kanji) {
 
 function jsonFromKanjiAlive(kanji) {
     return new Promise(resolve => {
-        let url = encodeURI("https://kanjialive-api.p.rapidapi.com/api/public/kanji/" + kanji + "?rapidapi-key=7cb6340baamshdfc2b337b5af3bap131ae0jsn66589d3438e9");
+        let url = encodeURI("https://kanjialive-api.p.rapidapi.com/api/public/kanji/" + kanji + "?rapidapi-key=" + rapidkey);
         let options = { method: "Get" };
         fetch(url, options)
             .then(res => res.json()).then(json => resolve(json));
