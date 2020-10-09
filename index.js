@@ -236,8 +236,10 @@ function DisplayList(user, channel) {
     let messages = [];
     messages.push("");
     let lastindex = 0;
+    if (user['kanjis'].length == 0)
+        return;
     user["kanjis"].forEach(kanji => {
-        if (messages[lastindex].length >= 400) {
+        if (messages[lastindex].length >= 1800) {
             messages[lastindex] = messages[lastindex].substr(0, messages[lastindex].length - 2);
             lastindex++;
             messages.push("");
