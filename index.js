@@ -67,13 +67,14 @@ client.on('message', message => {
         if (args[0] == "list") {
             args.shift();
             let mention = message.mentions.users.first();
-            let user;
+            let selectedUser;
             if (!mention) {
-                user = getUserKanjiDB(message.author.id);
+                selectedUser = message.author;
             } else {
-                user = getUserKanjiDB(mention.id);
+                selectedUser = mention;
             }
-            message.channel.send("``" + message.author.username + "`` 's kanji list contains ``" + user['kanjis'].length + "`` kanji.");
+            let user = getUserKanjiDB(selectedUser.id)
+            message.channel.send("``" + selectedUser.username + "`` 's kanji list contains ``" + user['kanjis'].length + "`` kanji.");
             DisplayList(user, message.channel);
             return;
         }
