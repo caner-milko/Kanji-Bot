@@ -66,7 +66,13 @@ client.on('message', message => {
 
         if (args[0] == "list") {
             args.shift();
-            let user = getUserKanjiDB(message.author.id);
+            let mention = message.mentions.users.first();
+            let user;
+            if (!mention) {
+                user = getUserKanjiDB(message.author.id);
+            } else {
+                user = getUserKanjiDB(mention.id);
+            }
             message.channel.send("``" + message.author.username + "`` 's kanji list contains ``" + user['kanjis'].length + "`` kanji.");
             DisplayList(user, message.channel);
             return;
