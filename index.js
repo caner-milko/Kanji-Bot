@@ -28,7 +28,7 @@ client.on('message', message => {
         return;
     if (message.content == "bot kardeşliği")
         setTimeout(() => {
-            message.channel.send("<@750480438786654310> gel la <:peepoHug:724583310994702407>");
+            message.channel.send("<@750480438786654310> gel la <:peepoHug:795062981426806805>");
         }, 1000);
 
     if (message.content.startsWith(prefix)) {
@@ -44,7 +44,7 @@ client.on('message', message => {
             return;
         }
         if (args[0] == "ado") {
-            message.channel.send("<:peepoHug:724583310994702407> <@223176950766764044>");
+            message.channel.send("<:peepoHug:795062981426806805> <@223176950766764044>");
             return;
         }
 
@@ -108,27 +108,44 @@ client.on('message', message => {
 
         if (args[0] == "search") {
             args.shift();
+
+            let amount = 1;
+            if (args.length >= 2 && !isNaN(args[0])) {
+                amount = args[0];
+                args.shift();
+            }
             if (args.length == 0) {
-                message.channel.send("!k search <kanji> [display amount]");
+                message.channel.send("!k search [display amount] <kanji>");
                 return;
             }
-            let amount = 1;
-            if (args.length >= 2 && !isNaN(args[1]))
-                amount = args[1];
-            displayKanji(args[0], amount, message.channel, false);
+            let toSearch = args[0];
+            args.shift();
+            args.forEach(arg => {
+                toSearch += " " + arg;
+            });
+            console.log(toSearch);
+            displayKanji(toSearch, amount, message.channel, false);
             return;
         }
 
         if (args[0] == "fsearch") {
             args.shift();
+
+            let amount = 1;
+            if (args.length >= 2 && !isNaN(args[0])) {
+                amount = args[0];
+                args.shift();
+            }
             if (args.length == 0) {
-                message.channel.send("!k fSearch <kanji> [display amount]");
+                message.channel.send("!k fsearch [display amount] <kanji>");
                 return;
             }
-            let amount = 1;
-            if (args.length >= 2 && !isNaN(args[1]))
-                amount = args[1];
-            displayKanji(args[0], amount, message.channel, true);
+            let toSearch = args[0];
+            args.shift();
+            args.forEach(arg => {
+                toSearch += " " + arg;
+            });
+            displayKanji(toSearch, amount, message.channel, false);
             return;
         }
 
@@ -298,7 +315,7 @@ function generateEmbedFromJson(search, json, hide) {
             meaningStrs += "\n\n";
         });
     }
-    let searchEmbed = new Discord.MessageEmbed().setTitle(search).setURL("https://www.jisho.org/search/" + search)
+    let searchEmbed = new Discord.MessageEmbed().setTitle(search).setURL(encodeURI("https://www.jisho.org/search/" + search))
         .setThumbnail("https://pbs.twimg.com/profile_images/378800000741890744/43702f3379bdb7d0d725b70ae9a5bd59_400x400.png")
         .setColor('#0099ff');
     if (kanjiFromJson != undefined)
@@ -324,6 +341,7 @@ function findKanji(kanji) {
 }
 
 function jsonFromJisho(kanji) {
+    console.log(kanji);
     return new Promise(resolve => {
         let url = encodeURI("https://jisho.org/api/v1/search/words?keyword=" + kanji);
         let options = { method: "Get" };
