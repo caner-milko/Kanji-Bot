@@ -8,6 +8,7 @@ const fetch = require('node-fetch');
 const { prefix, token, rapidkey } = require('./config.json');
 const client = new Discord.Client();
 const { spawn } = require('child_process')
+const { execFile } = require('child_process')
 
 const fs = require("fs");
 let kanjiDB;
@@ -216,18 +217,22 @@ client.on('message', message => {
             if (factorioServer == null) {
 
                 factorioChannel = message.channel;
-                factorioServer = spawn("/opt/factorio/start.sh");
-                factorioServer.stdout.on('data', (data) => {
-                    if (!factorioStarted) {
-                        factorioChannel.send(`Açıldım`);
-                        console.log(`Açıldım ` + data);
-                        factorioStarted = true;
+                factorioServer = execFile("/opt/factorio/start.sh", (error, stdout, stderr) => {
+                    if (stdout) {
+                        if (!factorioStarted) {
+                            factorioChannel.send(`Açıldım`);
+                            console.log(`Açıldım ` + data);
+                            factorioStarted = true;
+                        }
                     }
                 });
-                factorioServer.on('spawn', () => {
-                    factorioChannel.send(`Açıldım`);
-                    console.log(`Açıldım`);
-                })
+
+                factorioServer.on('close', (code) => {
+                    factorioChannel.send(`Kapandım`);
+                    console.log(`Kapandım`);
+                    factorioServer = null;
+                    factorioStarted = false;
+                });
 
                 factorioServer.on('close', (code) => {
                     factorioChannel.send(`Kapandım`);
@@ -242,7 +247,7 @@ client.on('message', message => {
         }
         if (args[0] == "factorio-stop") {
             if (factorioServer != null) {
-                factorioServer.kill();
+                factorioServer.kill('SIGINT');
                 message.channel.send("ööööö");
             } else {
                 message.channel.send("Kapalı ki");
