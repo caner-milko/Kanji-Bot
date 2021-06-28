@@ -14,6 +14,7 @@ let kanjiDB;
 let memberDB;
 let factorioServer;
 let factorioChannel;
+let factorioStarted = false;
 class Kanji {
     constructor(kanji) {
         this.kanji = kanji;
@@ -209,11 +210,15 @@ client.on('message', message => {
         }
         if (args[0] == "factorio-start") {
             if (factorioServer == null) {
+
                 factorioChannel = message.channel;
-                factorioServer = spawn("/opt/factorio/start.sh", { shell: true });
+                factorioServer = spawn("/opt/factorio/start.sh");
                 factorioServer.stdout.on('data', (data) => {
-                    factorioChannel.send(`Açıldım`);
-                    console.log(`Açıldım ` + data);
+                    if (!factorioStarted) {
+                        factorioChannel.send(`Açıldım`);
+                        console.log(`Açıldım ` + data);
+                        factorioStarted = true;
+                    }
                 });
                 factorioServer.on('spawn', () => {
                     factorioChannel.send(`Açıldım`);
@@ -224,6 +229,7 @@ client.on('message', message => {
                     factorioChannel.send(`Kapandım`);
                     console.log(`Kapandım`);
                     factorioServer = null;
+                    factorioStarted = false;
                 });
             } else {
                 message.channel.send("Zaten açık brom");
