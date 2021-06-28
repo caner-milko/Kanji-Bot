@@ -213,9 +213,11 @@ client.on('message', message => {
                 factorioChannel = message.channel;
                 factorioServer.on('spawn', () => {
                     factorioChannel.send(`Açıldım`);
+                    console.log(`Açıldım`);
                 })
 
                 factorioServer.on('close', (code) => {
+                    factorioChannel.send(`Kapandım`);
                     console.log(`Kapandım`);
                     factorioServer = null;
                 });
