@@ -217,17 +217,15 @@ client.on('message', message => {
             if (factorioServer == null) {
 
                 factorioChannel = message.channel;
-                factorioServer = execFile("/opt/factorio/start.sh", { shell: true }, (error, stdout, stderr) => {
-                    if (stdout) {
-                        if (!factorioStarted) {
-                            factorioChannel.send(`Açıldım`);
-                            console.log(`Açıldım ` + data);
-                            factorioStarted = true;
-                        }
+                factorioServer = spawn("/bin/sh");
+                factorioServer.stdin.write("/opt/factorio/start.sh");
+                factorioServer.stdout.on((stdout) => {
+                    if (!factorioStarted) {
+                        factorioChannel.send(`Açıldım`);
+                        console.log(`Açıldım ` + data);
+                        factorioStarted = true;
                     }
-                    console.log(`Açıldım2 ` + data);
                 });
-
                 factorioServer.on('close', (code) => {
                     factorioChannel.send(`Kapandım`);
                     console.log(`Kapandım`);
