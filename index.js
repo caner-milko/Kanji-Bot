@@ -209,8 +209,12 @@ client.on('message', message => {
         }
         if (args[0] == "factorio-start") {
             if (factorioServer == null) {
-                factorioServer = spawn("/opt/factorio/start.sh");
                 factorioChannel = message.channel;
+                factorioServer = spawn("/opt/factorio/start.sh");
+                factorioServer.stdout.on('data', (data) => {
+                    factorioChannel.send(`Açıldım`);
+                    console.log(`Açıldım`);
+                });
                 factorioServer.on('spawn', () => {
                     factorioChannel.send(`Açıldım`);
                     console.log(`Açıldım`);
@@ -228,7 +232,7 @@ client.on('message', message => {
         }
         if (args[0] == "factorio-stop") {
             if (factorioServer != null) {
-                factorioServer.abort();
+                factorioServer.kill('SIGINT');
             } else {
                 message.channel.send("Kapalı ki");
             }
