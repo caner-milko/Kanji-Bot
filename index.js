@@ -246,10 +246,7 @@ client.on('message', message => {
         }
         if (args[0] == "factorio-stop") {
             if (factorioServer != null) {
-                factorioServer.stdin.write('/opt/factorio/stop.sh\n');
-                setTimeout(() => {
-                    factorioServer.kill('SIGINT');
-                }, 1000);
+                factorioServer.kill('SIGINT');
             } else {
                 message.channel.send("Kapalı ki");
             }
