@@ -213,7 +213,7 @@ client.on('message', message => {
                 factorioServer = spawn("/opt/factorio/start.sh");
                 factorioServer.stdout.on('data', (data) => {
                     factorioChannel.send(`Açıldım`);
-                    console.log(`Açıldım`);
+                    console.log(`Açıldım ` + data);
                 });
                 factorioServer.on('spawn', () => {
                     factorioChannel.send(`Açıldım`);
