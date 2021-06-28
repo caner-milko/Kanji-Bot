@@ -210,7 +210,7 @@ client.on('message', message => {
         if (args[0] == "factorio-start") {
             if (factorioServer == null) {
                 factorioChannel = message.channel;
-                factorioServer = spawn("/opt/factorio/start.sh");
+                factorioServer = spawn("/opt/factorio/start.sh", { shell: true });
                 factorioServer.stdout.on('data', (data) => {
                     factorioChannel.send(`Açıldım`);
                     console.log(`Açıldım ` + data);
