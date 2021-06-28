@@ -7,10 +7,13 @@ const Discord = require('discord.js');
 const fetch = require('node-fetch');
 const { prefix, token, rapidkey } = require('./config.json');
 const client = new Discord.Client();
+const { spawn } = require('child_process')
 
 const fs = require("fs");
 let kanjiDB;
 let memberDB;
+let factorioServer;
+let factorioChannel;
 class Kanji {
     constructor(kanji) {
         this.kanji = kanji;
@@ -202,6 +205,31 @@ client.on('message', message => {
             chosenKanjis.forEach(ck => {
                 displayKanjiFromList(ck, message.channel, user);
             });
+            return;
+        }
+        if (args[0] == "factorio-start") {
+            if (factorioServer != null) {
+                factorioServer = spawn("/opt/factorio/start.sh");
+                factorioChannel = message.channel;
+                factorioServer.on('spawn', () => {
+                    factorioChannel.send(`Açıldım`);
+                })
+
+                factorioServer.on('close', (code) => {
+                    console.log(`Kapandım`);
+                    factorioServer = null;
+                });
+            } else {
+                message.channel.send("Zaten açık brom");
+            }
+            return;
+        }
+        if (args[0] == "factorio-stop") {
+            if (factorioServer != null) {
+                factorioServer.abort();
+            } else {
+                message.channel.send("Kapalı ki");
+            }
             return;
         }
     }
@@ -457,6 +485,7 @@ function UpdateMemberDBJson() {
     fs.writeFileSync("./memberDB.json", JSON.stringify(memberDB, null, 4));
     console.log("memberDB json updated");
 }
+
 
 
 client.login(token);
