@@ -208,7 +208,7 @@ client.on('message', message => {
             return;
         }
         if (args[0] == "factorio-start") {
-            if (factorioServer != null) {
+            if (factorioServer == null) {
                 factorioServer = spawn("/opt/factorio/start.sh");
                 factorioChannel = message.channel;
                 factorioServer.on('spawn', () => {
