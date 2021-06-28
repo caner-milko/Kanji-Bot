@@ -51,6 +51,10 @@ client.on('message', message => {
             message.channel.send("<:peepoHug:795062981426806805> <@223176950766764044>");
             return;
         }
+        if (args[0] == "atom") {
+            message.channel.send("<:peepoHug:795062981426806805> <@267164902290882570>");
+            return;
+        }
 
         if (args[0] == "reset") {
             kanjiDB = {
@@ -238,7 +242,7 @@ client.on('message', message => {
         }
         if (args[0] == "factorio-stop") {
             if (factorioServer != null) {
-                factorioServer.kill('SIGINT');
+                factorioServer.kill();
             } else {
                 message.channel.send("Kapalı ki");
             }
