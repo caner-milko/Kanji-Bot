@@ -234,7 +234,7 @@ client.on('message', message => {
                     factorioStarted = false;
                 });
 
-                factorioServer.on('close', (code) => {
+                factorioServer.on('exit', (code, signal) => {
                     factorioChannel.send(`Kapandım`);
                     console.log(`Kapandım`);
                     factorioServer = null;
