@@ -218,7 +218,7 @@ client.on('message', message => {
 
                 factorioChannel = message.channel;
                 factorioServer = spawn("/bin/sh");
-                factorioServer.stdout.on((stdout) => {
+                /*factorioServer.stdout.on((stdout) => {
                     if (!factorioStarted) {
                         //factorioServer.stdin.write("/opt/factorio/start.sh\n");
                         factorioChannel.send(`Açıldım`);
@@ -238,7 +238,7 @@ client.on('message', message => {
                     console.log(`Kapandım`);
                     factorioServer = null;
                     factorioStarted = false;
-                });
+                });*/
             } else {
                 message.channel.send("Zaten açık brom");
             }
