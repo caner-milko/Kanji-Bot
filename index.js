@@ -221,6 +221,7 @@ client.on('message', message => {
                 factorioServer = spawn("/bin/sh");
                 setTimeout(() => {
                     factorioServer.stdin.write("/opt/factorio/start.sh\n");
+                    factorioServer.stdin.write("echo slm\n");
                 }, 1000);
                 factorioServer.stdout.on("data", (data) => {
                     console.log(`Açıldım ` + data);
@@ -244,7 +245,7 @@ client.on('message', message => {
         }
         if (args[0] == "factorio-stop") {
             if (factorioServer != null) {
-                factorioServer.stdin.write('\x03');
+                factorioServer.kill('SIGINT');
             } else {
                 message.channel.send("Kapalı ki");
             }
