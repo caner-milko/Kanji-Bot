@@ -243,6 +243,7 @@ client.on('message', message => {
         if (args[0] == "factorio-stop") {
             if (factorioServer != null) {
                 factorioServer.kill();
+                message.channel.send("ööööö");
             } else {
                 message.channel.send("Kapalı ki");
             }
