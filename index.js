@@ -218,7 +218,7 @@ client.on('message', message => {
 
                 factorioChannel = message.channel;
                 factorioServer = spawn("/bin/sh");
-                factorioServer.stdout.on((stdout) => {
+                factorioServer.on("spawn", () => {
                     if (!factorioStarted) {
                         //factorioServer.stdin.write("/opt/factorio/start.sh\n");
                         factorioChannel.send(`Açıldım`);
