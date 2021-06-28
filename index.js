@@ -230,12 +230,6 @@ client.on('message', message => {
                         factorioChannel.send(`Açıldım`);
                     }
                 });
-                factorioServer.on('close', (code) => {
-                    factorioChannel.send(`Kapandım`);
-                    console.log(`Kapandım`);
-                    factorioServer = null;
-                    factorioStarted = false;
-                });
 
                 factorioServer.on('exit', (code, signal) => {
                     factorioChannel.send(`Kapandım`);
@@ -250,8 +244,7 @@ client.on('message', message => {
         }
         if (args[0] == "factorio-stop") {
             if (factorioServer != null) {
-                factorioServer.kill('SIGINT');
-                message.channel.send("ööööö");
+                factorioServer.stdin.write('\x03');
             } else {
                 message.channel.send("Kapalı ki");
             }
