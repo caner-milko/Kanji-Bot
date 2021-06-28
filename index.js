@@ -237,6 +237,7 @@ client.on('message', message => {
                     console.log(`Kapandım`);
                     factorioServer = null;
                     factorioStarted = false;
+                    spawn("/opt/factorio/stop.sh");
                 });
             } else {
                 message.channel.send("Zaten açık brom");
@@ -246,7 +247,9 @@ client.on('message', message => {
         if (args[0] == "factorio-stop") {
             if (factorioServer != null) {
                 factorioServer.stdin.write('/opt/factorio/stop.sh\n');
-                factorioServer.kill('SIGINT');
+                setTimeout(() => {
+                    factorioServer.kill('SIGINT');
+                }, 1000);
             } else {
                 message.channel.send("Kapalı ki");
             }
