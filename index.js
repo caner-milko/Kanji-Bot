@@ -217,7 +217,7 @@ client.on('message', message => {
             if (factorioServer == null) {
 
                 factorioChannel = message.channel;
-                factorioServer = execFile("/opt/factorio/start.sh", (error, stdout, stderr) => {
+                factorioServer = execFile("/opt/factorio/start.sh", { shell: true }, (error, stdout, stderr) => {
                     if (stdout) {
                         if (!factorioStarted) {
                             factorioChannel.send(`Açıldım`);
