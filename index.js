@@ -218,29 +218,30 @@ client.on('message', message => {
 
                 factorioChannel = message.channel;
                 factorioServer = spawn("/bin/sh");
-                factorioServer.stdin.write("/opt/factorio/start.sh\n");
-                factorioChannel.send(`Açıldım`);
-                /*
-                                factorioServer.stdout.on((stdout) => {
-                                    if (!factorioStarted) {
-                                        factorioChannel.send(`Açıldım`);
-                                        console.log(`Açıldım ` + data);
-                                        factorioStarted = true;
-                                    }
-                                });
-                                factorioServer.on('close', (code) => {
-                                    factorioChannel.send(`Kapandım`);
-                                    console.log(`Kapandım`);
-                                    factorioServer = null;
-                                    factorioStarted = false;
-                                });
+                factorioServer.on("spawn", () => {
+                    console.log("ööööööö");
+                });
+                factorioServer.stdout.on((stdout) => {
+                    if (!factorioStarted) {
+                        factorioServer.stdin.write("/opt/factorio/start.sh\n");
+                        factorioChannel.send(`Açıldım`);
+                        console.log(`Açıldım ` + data);
+                        factorioStarted = true;
+                    }
+                });
+                factorioServer.on('close', (code) => {
+                    factorioChannel.send(`Kapandım`);
+                    console.log(`Kapandım`);
+                    factorioServer = null;
+                    factorioStarted = false;
+                });
 
-                                factorioServer.on('exit', (code, signal) => {
-                                    factorioChannel.send(`Kapandım`);
-                                    console.log(`Kapandım`);
-                                    factorioServer = null;
-                                    factorioStarted = false;
-                                });*/
+                factorioServer.on('exit', (code, signal) => {
+                    factorioChannel.send(`Kapandım`);
+                    console.log(`Kapandım`);
+                    factorioServer = null;
+                    factorioStarted = false;
+                });
             } else {
                 message.channel.send("Zaten açık brom");
             }
