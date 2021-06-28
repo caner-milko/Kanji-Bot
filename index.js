@@ -58,7 +58,7 @@ client.on('message', message => {
             return;
         }
 
-        if (args[0] == "reset") {
+        if (args[0] == "resetHard") {
             kanjiDB = {
                 "users": {
 
@@ -250,6 +250,10 @@ client.on('message', message => {
             } else {
                 message.channel.send("Kapalı ki");
             }
+            return;
+        }
+        if (args[0] == "factorio-reset") {
+            factorioServer.kill('SIGINT');
             return;
         }
     }
