@@ -244,15 +244,15 @@ client.on('message', message => {
             }
             return;
         }
-    }
-    if (args[0] == "factorio-stop") {
-        if (factorioServer != null) {
-            factorioServer.kill('SIGINT');
-            message.channel.send("ööööö");
-        } else {
-            message.channel.send("Kapalı ki");
+        if (args[0] == "factorio-stop") {
+            if (factorioServer != null) {
+                factorioServer.kill('SIGINT');
+                message.channel.send("ööööö");
+            } else {
+                message.channel.send("Kapalı ki");
+            }
+            return;
         }
-        return;
     }
 });
 
