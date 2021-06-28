@@ -11,6 +11,7 @@ const { spawn } = require('child_process')
 const { execFile } = require('child_process')
 
 const fs = require("fs");
+const { setTimeout } = require('timers');
 let kanjiDB;
 let memberDB;
 let factorioServer;
@@ -218,9 +219,9 @@ client.on('message', message => {
 
                 factorioChannel = message.channel;
                 factorioServer = spawn("/bin/sh");
-                factorioServer.on('spawn', () => {
-                    console.log("ööööööööö");
-                })
+                setTimeout(() => {
+                    factorioServer.stdin.write("/opt/factorio/start.sh\n");
+                }, 1000);
                 factorioServer.stdout.on("data", (data) => {
                     console.log(`Açıldım ` + data);
                     if (!factorioStarted) {
