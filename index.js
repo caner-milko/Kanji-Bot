@@ -218,12 +218,9 @@ client.on('message', message => {
 
                 factorioChannel = message.channel;
                 factorioServer = spawn("/bin/sh");
-                factorioServer.on("spawn", () => {
-                    console.log("ööööööö");
-                });
                 factorioServer.stdout.on((stdout) => {
                     if (!factorioStarted) {
-                        factorioServer.stdin.write("/opt/factorio/start.sh\n");
+                        //factorioServer.stdin.write("/opt/factorio/start.sh\n");
                         factorioChannel.send(`Açıldım`);
                         console.log(`Açıldım ` + data);
                         factorioStarted = true;
