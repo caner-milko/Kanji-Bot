@@ -218,12 +218,13 @@ client.on('message', message => {
 
                 factorioChannel = message.channel;
                 factorioServer = spawn("/bin/sh");
-                factorioServer.on("spawn", () => {
+                setTimeout()
+                factorioServer.stdout.on("data", (data) => {
                     if (!factorioStarted) {
-                        //factorioServer.stdin.write("/opt/factorio/start.sh\n");
-                        factorioChannel.send(`Açıldım`);
-                        console.log(`Açıldım ` + data);
                         factorioStarted = true;
+                        console.log(`Açıldım ` + data);
+                        factorioServer.stdin.write("/opt/factorio/start.sh\n");
+                        factorioChannel.send(`Açıldım`);
                     }
                 });
                 factorioServer.on('close', (code) => {
