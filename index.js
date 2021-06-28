@@ -225,6 +225,7 @@ client.on('message', message => {
                             factorioStarted = true;
                         }
                     }
+                    console.log(`Açıldım2 ` + data);
                 });
 
                 factorioServer.on('close', (code) => {
@@ -247,6 +248,7 @@ client.on('message', message => {
         }
         if (args[0] == "factorio-stop") {
             if (factorioServer != null) {
+                factorioServer.
                 factorioServer.kill('SIGINT');
                 message.channel.send("ööööö");
             } else {
