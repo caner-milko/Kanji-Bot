@@ -7,8 +7,9 @@ const Discord = require('discord.js');
 const fetch = require('node-fetch');
 const { prefix, token, rapidkey } = require('./config.json');
 const client = new Discord.Client();
-const { spawn } = require('child_process')
-const { execFile } = require('child_process')
+const { spawn } = require('child_process');
+const { execFile } = require('child_process');
+const hepburn = require('hepburn');
 
 const fs = require("fs");
 const { setTimeout } = require('timers');
@@ -134,7 +135,7 @@ client.on('message', message => {
                 toSearch += " " + arg;
             });
             console.log(toSearch);
-            displayKanji(toSearch, amount, message.channel, false);
+            displayKanji(toSearch, amount, message.channel, false, false);
             return;
         }
 
@@ -155,7 +156,7 @@ client.on('message', message => {
             args.forEach(arg => {
                 toSearch += " " + arg;
             });
-            displayKanji(toSearch, amount, message.channel, false);
+            displayKanji(toSearch, amount, message.channel, false, false);
             return;
         }
 
@@ -259,7 +260,7 @@ client.on('message', message => {
     }
 });
 
-async function displayKanji(kanji, amount, channel, fullSearch) {
+async function displayKanji(kanji, amount, channel, fullSearch, hide) {
     let jishoJson = await jsonFromJisho(kanji);
     let displayedAmount = 0;
     let firstKanji = undefined;
@@ -274,7 +275,7 @@ async function displayKanji(kanji, amount, channel, fullSearch) {
             return;
         }
 
-        let searchEmbed = generateEmbedFromJson(kanji, dataJson, !fullSearch);
+        let searchEmbed = generateEmbedFromJson(kanji, dataJson, hide);
         channel.send(searchEmbed);
         displayedAmount++;
 
@@ -301,8 +302,8 @@ async function basicDisplayKanji(kanji, channel) {
     let jishoJson = await jsonFromJisho(kanji);
     if (jishoJson['data'] != undefined && jishoJson['data'].length > 0 && jishoJson['data'][0]['japanese'] != undefined) {
         channel.send(jishoJson['data'][0]['japanese'][0]['word'] +
-            " ||" + jishoJson['data'][0]['japanese'][0]['reading'] + "|| " +
-            "||" + jishoJson['data'][0]['senses'][0]['english_definitions'][0] + "||");
+            " " + jishoJson['data'][0]['japanese'][0]['reading'] +
+            " " + jishoJson['data'][0]['senses'][0]['english_definitions'][0]);
     } else {
         channel.send("yok ki olm mal mısın");
     }
@@ -373,10 +374,12 @@ function generateEmbedFromJson(search, json, hide) {
     if (kanjiFromJson != undefined)
         searchEmbed.addField("Kanji", kanjiFromJson, false);
     if (readings != undefined) {
+        let romaji = "||" + hepburn.fromKana(readingStr).toLowerCase() + "||";
         if (hide) {
             readingStr = "||" + readingStr + "||";
         }
-        searchEmbed.addField("Reading", "**" + readingStr + "**", true)
+        searchEmbed.addField("Reading", "**" + readingStr + "**", false);
+        searchEmbed.addField("Romaji", "**" + romaji + "**", false);
     }
     if (meanings != undefined) {
         if (hide)
