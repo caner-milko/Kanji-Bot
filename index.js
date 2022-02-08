@@ -6,6 +6,7 @@ setInterval(() => {
 const Discord = require('discord.js');
 const fetch = require('node-fetch');
 const { prefix, token, rapidkey } = require('./config.json');
+let msgs = require('./default_msgs');
 const client = new Discord.Client();
 const { spawn } = require('child_process');
 const { execFile } = require('child_process');
@@ -15,9 +16,9 @@ const fs = require("fs");
 const { setTimeout } = require('timers');
 let kanjiDB;
 let memberDB;
-let factorioServer;
+/*let factorioServer;
 let factorioChannel;
-let factorioStarted = false;
+let factorioStarted = false;*/
 class Kanji {
     constructor(kanji) {
         this.kanji = kanji;
@@ -28,6 +29,9 @@ client.once('ready', () => {
     console.log('Ready!');
     kanjiDB = JSON.parse(fs.readFileSync("./kanjiDB.json", { encoding: "utf8" }));
     memberDB = JSON.parse(fs.readFileSync("./memberDB.json", { encoding: "utf8" }));
+    if (fs.existsSync('./msgs.json')) {
+        msgs = require('./msgs.json');
+    }
 })
 
 client.on('message', message => {
@@ -35,7 +39,7 @@ client.on('message', message => {
         return;
     if (message.content == "bot kardeşliği")
         setTimeout(() => {
-            message.channel.send("<@750480438786654310> gel la <:peepoHug:795062981426806805>");
+            message.channel.send(msgs['server-specific']['bot-siblinghood']);
         }, 1000);
 
     if (message.content.startsWith(prefix)) {
@@ -51,11 +55,11 @@ client.on('message', message => {
             return;
         }
         if (args[0] == "ado") {
-            message.channel.send("<:peepoHug:795062981426806805> <@223176950766764044>");
+            message.channel.send(msgs['server-specific']['ado-hug']);
             return;
         }
         if (args[0] == "atom") {
-            message.channel.send("<:peepoHug:795062981426806805> <@267164902290882570>");
+            message.channel.send(msgs['server-specific']['atom-hug']);
             return;
         }
 
@@ -85,7 +89,7 @@ client.on('message', message => {
                 selectedUser = mention;
             }
             let user = getUserKanjiDB(selectedUser.id)
-            message.channel.send("``" + selectedUser.username + "`` 's kanji list contains ``" + user['kanjis'].length + "`` kanji.");
+            message.channel.send(msgs['user-kanji-count'].replace("%name%", selectedUser.username).replace("%kanji-count%", user['kanjis'].length));
             DisplayList(user, message.channel);
             return;
         }
@@ -99,7 +103,7 @@ client.on('message', message => {
             let kanji = args[0];
             let foundKanji = kanjiDB["kanjis"][kanji];
             if (foundKanji == undefined) {
-                message.channel.send("yok ki olm mal mısın");
+                message.channel.send(msgs['kanji-not-found']);
                 return;
             }
             message.channel.send(generateEmbedFromJson(kanji, foundKanji, false));
@@ -180,11 +184,11 @@ client.on('message', message => {
             let kanji = args[0];
             let user = getUserKanjiDB(message.author.id);
             if (!user['kanjis'].includes(kanji)) {
-                message.channel.send("Senin listede bu yok nereye kaldırıyon <:peepoGiggle:724583310734655520>");
+                message.channel.send(msgs['kanji-not-in-list']);
                 return;
             }
             user['kanjis'].splice(user['kanjis'].indexOf(kanji), 1);
-            message.channel.send("Removed kanji ``" + kanji + "`` from your kanji list. ``" + user['kanjis'].length + "`` kanjis are in your list.");
+            message.channel.send(msgs['removed-kanji'].replace("%kanji%", kanji).replace(user['kanjis'].length));
             UpdateMemberDBJson();
             return;
         }
@@ -215,7 +219,7 @@ client.on('message', message => {
             });
             return;
         }
-        if (args[0] == "factorio-start") {
+        /*if (args[0] == "factorio-start") {
             if (factorioServer == null) {
 
                 factorioChannel = message.channel;
@@ -256,7 +260,7 @@ client.on('message', message => {
         if (args[0] == "factorio-reset") {
             factorioServer.kill('SIGINT');
             return;
-        }
+        }*/
     }
 });
 
@@ -294,7 +298,7 @@ async function displayKanji(kanji, amount, channel, fullSearch, hide) {
         }
     }
     if (displayedAmount == 0) {
-        channel.send("yok ki olm mal mısın");
+        channel.send(msgs['kanji-not-found']);
     }
 }
 
@@ -305,7 +309,7 @@ async function basicDisplayKanji(kanji, channel) {
             " " + jishoJson['data'][0]['japanese'][0]['reading'] +
             " " + jishoJson['data'][0]['senses'][0]['english_definitions'][0]);
     } else {
-        channel.send("yok ki olm mal mısın");
+        channel.send(msgs['kanji-doesnt-exist']);
     }
 }
 
@@ -417,12 +421,12 @@ function jsonFromKanjiAlive(kanji) {
 async function tryAddKanjiToUser(kanji, channel, userID) {
     let user = getUserKanjiDB(userID);
     if (user['kanjis'].includes(kanji)) {
-        channel.send("Ztn var olm napıyon");
+        channel.send(msgs['kanji-already-in-list']);
         return;
     }
     if (kanjiDB['kanjis'][kanji] == undefined) {
         if (!await addKanjiToList(kanji)) {
-            channel.send("yok ki olm mal mısın");
+            channel.send(msgs['kanji-doesnt-exist']);
             return;
         }
     }
@@ -430,7 +434,7 @@ async function tryAddKanjiToUser(kanji, channel, userID) {
     user['kanjis'].push(kanji);
     channel.send("Found kanji:");
     channel.send(foundEmbed);
-    channel.send("Added kanji ``" + kanji + "`` to kanji list of <@" + userID + ">, which contains ``" + user['kanjis'].length + "`` kanji.");
+    channel.send(msgs['added-kanji-to-list'].replace("%kanji%", kanji).replace("%used-id%", userID).replace("%kanji-count%", user['kanjis'].length));
     UpdateMemberDBJson();
 }
 
@@ -453,7 +457,7 @@ async function addKanjiToList(kanji) {
 async function displayKanjiFromList(kanji, channel, user) {
     let json = await getKanjiFromList(kanji);
     if (json == null) {
-        channel.send("Couldn't find kanji ``" + kanji + "``.");
+        channel.send(msgs['kanji-couldnt-found'].replace("%kanji%", kanji));
         user['kanjis'].splice(user.indexOf(kanji), 1);
         UpdateMemberDBJson();
         return;
@@ -502,6 +506,8 @@ function findFirstMatch(kanji, datasJson) {
     });
     return foundData;
 }
+
+
 
 function UpdateKanjiDBJson() {
     fs.writeFileSync("./kanjiDB.json", JSON.stringify(kanjiDB, null, 4));

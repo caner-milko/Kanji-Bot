@@ -1,0 +1,15 @@
+{
+    "user-kanji-count": "``%name%`` 's kanji list contains ``%kanji-count%`` kanji.",
+    "kanji-not-found": "Couldn't find kanji.",
+    "kanji-not-in-list": "Kanji is not in your list",
+    "removed-kanji": "Removed kanji ``%kanji%`` from your kanji list. ``%kanji-count%`` kanjis are in your list.",
+    "kanji-doesnt-exist": "Kanji doesn't exist.",
+    "kanji-already-in-list": "Kanji is already in your list.",
+    "added-kanji-to-list": "Added kanji ``%kanji%`` to kanji list of <@%user-id%>, which contains ``%kanji-count%`` kanji.",
+    "kanji-couldnt-found": "Couldn't find kanji ``%kanji%``.",
+    "server-specific": {
+        "bot-siblinghood": "<@750480438786654310> gel la <:peepoHug:795062981426806805>",
+        "ado-hug": "<:peepoHug:795062981426806805> <@223176950766764044>",
+        "atom-hug": "<:peepoHug:795062981426806805> <@267164902290882570>"
+    }
+}
